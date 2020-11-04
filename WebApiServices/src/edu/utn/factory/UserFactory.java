@@ -7,7 +7,7 @@ import java.sql.Date;
 
 public class UserFactory implements Factory {
 
-    static User create (JSONObject object){
+    public static User create(JSONObject object){
         return new User(object.get("name").toString(), object.get("password").toString(), object.getString("surname").toString(),
                 object.getString("email").toString(), object.getString("nickname").toString(), Date.valueOf(object.getString("birthday")));
     }

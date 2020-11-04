@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Login {
 
     private String email;
-    private String password;
+    private String pasword;
 
     public String getEmail() {
         return email;
@@ -17,11 +17,11 @@ public class Login {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPasword() {
+        return pasword;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPasword(String pasword) {
+        this.pasword = pasword;
     }
 }
