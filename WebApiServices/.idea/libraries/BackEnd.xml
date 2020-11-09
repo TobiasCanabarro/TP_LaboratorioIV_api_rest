@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="BackEnd">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/BackEnd.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../../GitHub/TP_LaboratorioIV/src" />
+    </SOURCES>
+  </library>
+</component>

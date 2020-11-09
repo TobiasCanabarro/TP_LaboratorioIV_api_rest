@@ -1,26 +1,29 @@
 package edu.utn.services;
 
+import com.google.gson.Gson;
 import edu.utn.entity.Login;
 import edu.utn.entity.User;
+import edu.utn.entity.UserPost;
 import edu.utn.enums.Result;
+import edu.utn.factory.UserFactory;
 import edu.utn.factory.UserManagerFactory;
-
 import edu.utn.mail.Mail;
+
 import org.json.JSONObject;
 import edu.utn.manager.UserManager;
+import org.omg.Dynamic.Parameter;
 
-import javax.jws.soap.SOAPBinding;
 import javax.mail.MessagingException;
 import javax.ws.rs.*;
-//import com.google.gson.Gson;
 import javax.ws.rs.core.MediaType;
-import java.sql.Date;
+import javax.ws.rs.core.Response;
+import java.util.List;
+
 
 @Path("login")
 public class LoginServices {
 
     @GET
-    //@Consumes(MediaType.APPLICATION_JSON)
     @Path("algo")
     @Produces(MediaType.TEXT_PLAIN)
     public String getalgo(){
@@ -28,23 +31,30 @@ public class LoginServices {
         return "tuhermana";
     }
 
-
     @GET
-    //@Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String getUser(String id){
+    public String getUser(String body){
+        UserManager manager = UserManagerFactory.create();
+        JSONObject jsonObject = new JSONObject(body);
+        User user = manager.get(Long.valueOf(jsonObject.getString("idUser")));
 
-        JSONObject response = new JSONObject("user");
+        JSONObject response = new JSONObject(user);
         return response.toString();
     }
 
     @GET
+    @Path("getAllUser")
     //@Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String getAllUser(){
 
-        JSONObject response = new JSONObject("user");
-        return response.toString();
+        UserManager manager = UserManagerFactory.create();
+        List<User> users = manager.getAllUser();
+
+        //Gson gson = new Gson();
+
+        return "gson.toJson(users)";
     }
 
 
@@ -65,7 +75,6 @@ public class LoginServices {
         UserManager manager = UserManagerFactory.create();
         Result value = manager.logIn(login.getEmail(), login.getPasword());
 
-
         JSONObject response = new JSONObject(value);
         return response.toString();
     }
@@ -75,35 +84,20 @@ public class LoginServices {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String singIn(String body) throws MessagingException {
-        boolean retVal= false;
-        JSONObject req = new JSONObject(body);
-        String name = req.getString("name");
-        String pass = req.getString("password");
-        String surname = req.getString("surname");
-        String nickname = req.getString("nickname");
-        String email = req.getString("email");
 
-        //Date birthday = Date.valueOf(req.getString("birthday"));
-         User user = new User (name, pass, surname, email, nickname, new Date(9999));
-        //User user = new User("Monica", "monica123", "Diaz", "monica@gmail.com", "moni", new Date(90000000));
+        JSONObject jsonObject = new JSONObject(body);
+        User user = UserFactory.create(jsonObject);
 
         UserManager manager =  UserManagerFactory.create();
-        retVal = manager.signIn(user);
-        if(retVal){
+        boolean value = manager.signIn(user);
+        Result result = Result.SIGN_IN_FAIL;
+
+        if(value){
             Mail.sendMail(user.getEmail(), Result.SIGN_IN_OK, "endpoint: ");
+            result = Result.SIGN_IN_OK;
         }
 
-        JSONObject response = new JSONObject(retVal);
-        return response.toString();
-    }
-
-    @POST
-    @Path("singOut")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public String singOut(String id){
-
-        JSONObject response = new JSONObject("singout");
+        JSONObject response = new JSONObject(result);
         return response.toString();
     }
 
@@ -112,8 +106,47 @@ public class LoginServices {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String logOut(String id){
+        JSONObject req = new JSONObject(id);
+        long idUser = Long.valueOf(req.getString("id_user"));
+        UserManager manager = UserManagerFactory.create();
+        boolean value = manager.logOut(idUser);
 
-        JSONObject response = new JSONObject("logout");
+        Result resultLogOut = Result.LOG_OUT_FAIL;
+        if(value){
+            resultLogOut = Result.LOG_OUT_OK;
+        }
+
+        JSONObject response = new JSONObject(resultLogOut);
         return response.toString();
     }
+
+    //Con este endpoint se solicita el desbloqueo de la cuenta
+    @POST
+    @Path("requestUnlockedAccount")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void requestUnlockedAccount (String body){
+        JSONObject jsonObject = new JSONObject(body);
+        UserManager manager = UserManagerFactory.create();
+        String email = jsonObject.getString("email");
+        manager.requestUnlockedAccount(email, "http:localhost:8080/webapi/login/unLockedAccount/" + email);
+
+    }
+
+    //Con este endpont se desbloquea la cuenta. Este endpoint llega por email
+    @POST
+    @Path("unLockedAccount/{email}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String unLockedAccount (@PathParam("email")String email) {
+        UserManager manager = UserManagerFactory.create();
+        boolean value =  manager.unLockedAccount(email);
+        Result result = Result.UNLOCKED_ACCOUNT_FAIL;
+
+        if(value){
+            result = Result.UNLOCKED_ACCOUNT_OK;
+        }
+
+        JSONObject response = new JSONObject(result);
+        return response.toString();
+    }
+
 }
