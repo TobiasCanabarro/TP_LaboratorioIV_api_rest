@@ -1,22 +1,18 @@
 package edu.utn.services;
 
-import com.google.gson.Gson;
 import edu.utn.entity.Login;
 import edu.utn.entity.User;
-import edu.utn.entity.UserPost;
 import edu.utn.enums.Result;
 import edu.utn.factory.UserFactory;
 import edu.utn.factory.UserManagerFactory;
+import edu.utn.log.LogHelper;
 import edu.utn.mail.Mail;
-
+import org.json.JSONArray;
 import org.json.JSONObject;
 import edu.utn.manager.UserManager;
-import org.omg.Dynamic.Parameter;
-
 import javax.mail.MessagingException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.util.List;
 
 
@@ -27,17 +23,17 @@ public class LoginServices {
     @Path("algo")
     @Produces(MediaType.TEXT_PLAIN)
     public String getalgo(){
-
         return "tuhermana";
     }
 
     @GET
+    @Path("getUser")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String getUser(String body){
         UserManager manager = UserManagerFactory.create();
         JSONObject jsonObject = new JSONObject(body);
-        User user = manager.get(Long.valueOf(jsonObject.getString("idUser")));
+        User user = manager.get(jsonObject.getString("email"));
 
         JSONObject response = new JSONObject(user);
         return response.toString();
@@ -45,16 +41,31 @@ public class LoginServices {
 
     @GET
     @Path("getAllUser")
-    //@Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String getAllUser(){
 
         UserManager manager = UserManagerFactory.create();
         List<User> users = manager.getAllUser();
 
-        //Gson gson = new Gson();
+        JSONArray jsonArray = new JSONArray();
+        JSONObject jsonObject = null;
 
-        return "gson.toJson(users)";
+        for (User user : users){
+            jsonObject = new JSONObject();
+            jsonObject.put("idUser", user.getId());
+            jsonObject.put("name", user.getName());
+            jsonObject.put("surname", user.getSurname());
+            jsonObject.put("password", user.getPassword());
+            jsonObject.put("email", user.getEmail());
+            jsonObject.put("nickname", user.getNickname());
+            jsonObject.put("birthday", user.getBirthday());
+            jsonObject.put("attemptLogIn", user.getAttemptLogin());
+            jsonObject.put("locked", user.isLocked());
+            jsonObject.put("logIn", user.isLogIn());
+            jsonArray.put(jsonObject);
+        }
+
+        return jsonArray.toString();
     }
 
 
@@ -62,8 +73,8 @@ public class LoginServices {
     @Path("login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String logIn(String body) throws MessagingException {
-
+    public String logIn(String body) {
+        System.out.println(body);
         JSONObject req = new JSONObject(body);
         String email = req.getString("email");
         String pass = req.getString("password");
@@ -80,7 +91,7 @@ public class LoginServices {
     }
 
     @POST
-    @Path("singin")
+    @Path("signin")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String singIn(String body) throws MessagingException {
@@ -93,7 +104,7 @@ public class LoginServices {
         Result result = Result.SIGN_IN_FAIL;
 
         if(value){
-            Mail.sendMail(user.getEmail(), Result.SIGN_IN_OK, "endpoint: ");
+            Mail.sendMail(user.getEmail(), Result.SIGN_IN_OK, "Gracias por registrarse!");
             result = Result.SIGN_IN_OK;
         }
 
@@ -106,6 +117,7 @@ public class LoginServices {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String logOut(String id){
+
         JSONObject req = new JSONObject(id);
         long idUser = Long.valueOf(req.getString("id_user"));
         UserManager manager = UserManagerFactory.create();
@@ -128,17 +140,21 @@ public class LoginServices {
         JSONObject jsonObject = new JSONObject(body);
         UserManager manager = UserManagerFactory.create();
         String email = jsonObject.getString("email");
-        manager.requestUnlockedAccount(email, "http:localhost:8080/webapi/login/unLockedAccount/" + email);
-
+        manager.requestUnlockedAccount(email, "http://localhost:8080/webapi/unlockAccount.html");
     }
 
-    //Con este endpont se desbloquea la cuenta. Este endpoint llega por email
+
+    //Con este endpoint se desbloquea la cuenta. Este endpoint llega por email
     @POST
-    @Path("unLockedAccount/{email}")
+    @Path("unlockedAccount")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String unLockedAccount (@PathParam("email")String email) {
+    public String unLockedAccount (String body) {
+        JSONObject jsonObject = new JSONObject(body);
+
         UserManager manager = UserManagerFactory.create();
-        boolean value =  manager.unLockedAccount(email);
+        boolean value =  manager.unLockedAccount(jsonObject.getString("email"));
+
         Result result = Result.UNLOCKED_ACCOUNT_FAIL;
 
         if(value){
@@ -148,5 +164,65 @@ public class LoginServices {
         JSONObject response = new JSONObject(result);
         return response.toString();
     }
+
+
+    //Con este endpoint se hace la solicitud para recuperar la cuenta
+    @POST
+    @Path("forgotPassword")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void forgotPassword (String body) {
+
+        JSONObject jsonObject = new JSONObject(body);
+        String email = jsonObject.getString("email");
+
+        UserManager manager = UserManagerFactory.create();
+        User user = manager.get(email);
+
+        if(user != null){
+            try {
+                Mail.sendMail(email, Result.RESET_PASSWORD, "http://localhost:8080/webapi/resetPassword.html");
+            }
+            catch (MessagingException exception){
+                LogHelper.createNewErrorLog(exception.getMessage());
+            }
+        }
+    }
+
+    //Reinicia la contrasena. Toma la nueva contrasena del input del html
+    @POST
+    @Path("resetPassword")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String resetPassword (String body){
+
+        JSONObject jsonObject = new JSONObject(body);
+        String newPassword = jsonObject.getString("password");
+        String email = jsonObject.getString("email");
+
+        UserManager manager = UserManagerFactory.create();
+        User user = manager.get(email);
+
+        boolean value = manager.changePassword(user.getId(), newPassword);
+        Result result = Result.CHANGE_PASSWORD_FAIL;
+
+        if(value){
+           try {
+               result = Result.CHANGE_PASSWORD;
+               Mail.sendMail(email, result, "Se cambio la contrasenia");
+           }
+           catch (MessagingException exception){
+               LogHelper.createNewErrorLog(exception.getMessage());
+           }
+        }
+
+        JSONObject response = new JSONObject(result);
+        return  response.toString();
+    }
+
+
+
+
+
+
+
 
 }

@@ -5,23 +5,38 @@
   <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+  <script src='https://www.google.com/recaptcha/api.js%27%3E'></script>
+  <script src = "controllers/signInController.js"></script>
   <title>Sign in</title>
 </head>
 
 <body>
   <div class="main2">
     <p class="sign" align="center">Sign in</p>
-    <form class="form1">      
-      <input class="un " type="text" align="center" placeholder="Email">
-      <input class="pass" type="password" align="center" placeholder="Password">
-      <input class="pass" type="password" align="center" placeholder="Check Password">
-      <input class="un " type="text" align="center" placeholder="Name">
-      <input class="un " type="text" align="center" placeholder="Surname">
-      <input class="un " type="text" align="center" placeholder="Username">
-      <input class="un " type="date" align="center" placeholder="Birthday">
+    <form class="form1"method="POST" action="EnviarDatos.php">
+      <input class="un " id="email" type="text" align="center" placeholder="Email" required>
+      <input class="pass" id="pass" type="password"  align="center"  pattern="(?=.\d)(?=.[a-z])(?=.[A-Z]).{8,}" placeholder="Password" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required>
+      <input class="pass" id="passCheck" type="password" align="center" pattern="(?=.\d)(?=.[a-z])(?=.[A-Z]).{8,}" placeholder="Check Password" required>
+      <input class="un "  id="name" type="text" align="center" placeholder="Name" required>
+      <input class="un " id="sur"  type="text" align="center" placeholder="Surname" required>
+      <input class="un " id="nick" type="text"  align="center" placeholder="Username">
+      <input class="un " id="bd"  type="date" align="center" placeholder="Birthday" required>
+      <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
 
-      <a class="submit" align="center">Sign in</a>  
-    </div>
-</body>
+
+      <a class="submit" onclick="requestSignIn();" align="center">Sign in</a>
+      </form>
+    <script src='https://www.google.com/recaptcha/api.js?render=6LftFOEZAAAAAMihgfo2wuFdf8FKQO4V-4CKC_Zi'></script>
+  <script>
+  grecaptcha.ready(function() {
+    grecaptcha.execute("6LftFOEZAAAAAMihgfo2wuFdf8FKQO4V-4CKC_Zi", {action: 'homepage'})
+            .then(function(token) {
+              document.getElementById('g-recaptcha-response').value=token;
+            });
+  });
+  </script>
+  </div>
+
+  </body>
 
 </html>

@@ -11,7 +11,6 @@ import org.json.JSONObject;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
 import java.util.List;
 
 @Path("post")
@@ -38,8 +37,7 @@ public class PostServices {
     public String myPosts (String body){
         PostManager manager = UserPostManagerFactory.create();
         JSONObject jsonObject = new JSONObject(body);
-        long idUser = Long.valueOf(jsonObject.getString("idUser"));
-        List<UserPost> posts = manager.myPosts(idUser);
+        List<UserPost> posts = manager.myPosts(Long.valueOf(jsonObject.getString("idUser")));
 
         //Obtengo los nombres y apellidos de los usuarios de mis publicaciones
 
