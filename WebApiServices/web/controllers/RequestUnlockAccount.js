@@ -1,7 +1,7 @@
 
 const TOKEN_REQUEST_UNLOCK_ACCOUNT = "requestUnlockAccount";
 
-const TOKEN_RESPONSE_UNLOCK_ACCOUNT = "responseUnlockAccount";
+//const TOKEN_RESPONSE_UNLOCK_ACCOUNT = "responseUnlockAccount";
 
 let requestUnlockAccountObject = () => {
     let obj = {};
@@ -18,10 +18,6 @@ let requestUnlockAccount = () => {
     request.setRequestHeader('Content-Type', 'application/json');
     request.send(JSON.stringify(body));
 }
-
-
-// ***************************************************************************************************
-
 
 let unlockAccountObject = () => {
     let obj = {};
@@ -45,7 +41,6 @@ let responseUnlockAccount = (request) => {
     let obj = request.responseText;
 
     if(obj){
-
         let json = JSON.parse(obj);
         console.log(json);
         alert(json.description);

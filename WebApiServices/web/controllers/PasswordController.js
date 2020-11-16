@@ -34,11 +34,11 @@ let requestResetPassword = () => {
 
 
 let response = (request) => {
-    var obj = request.responseText;
-    var json = JSON.parse(obj);
+    let obj = request.responseText;
+    let json = JSON.parse(obj);
     if(obj){
         localStorage.setItem('responseForgotPass', obj);
-        if(json.description == "Change password"){
+        if(json.description == "Change password"){////Reemplazar por ok, fail o algo asi (un objecto)
             alert(json.description);
             window.location.href = 'index.html';
         }

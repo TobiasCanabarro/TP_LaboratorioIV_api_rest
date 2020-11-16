@@ -16,24 +16,21 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 
-@Path("login")
+@Path("login")//user
 public class LoginServices {
 
-    @GET
-    @Path("algo")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String getalgo(){
-        return "tuhermana";
-    }
 
-    @GET
+    @POST
     @Path("getUser")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String getUser(String body){
-        UserManager manager = UserManagerFactory.create();
+
         JSONObject jsonObject = new JSONObject(body);
-        User user = manager.get(jsonObject.getString("email"));
+        String email = jsonObject.getString("email");
+
+        UserManager manager = UserManagerFactory.create();
+        User user = manager.get(email);
 
         JSONObject response = new JSONObject(user);
         return response.toString();
@@ -68,7 +65,7 @@ public class LoginServices {
         return jsonArray.toString();
     }
 
-
+    //Response.status(Response.Status.OK).entity(response.toString()).build();
     @POST
     @Path("login")
     @Consumes(MediaType.APPLICATION_JSON)

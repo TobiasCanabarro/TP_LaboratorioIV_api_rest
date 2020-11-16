@@ -1,6 +1,6 @@
 
 
-var signInObject = () => {
+let signInObject = () => {
     let obj = {};
     obj.name = document.querySelector("#name").value;
     obj.surname = document.querySelector("#sur").value;
@@ -15,7 +15,7 @@ var response = (request) => {
     var obj = request.responseText;
     var json = JSON.parse(obj);
     if(obj){
-        if(json.description == "Sign in successful"){
+        if(json.description == "Sign in successful"){////Reemplazar por ok, fail o algo asi (un objecto)
             alert(json.description);
             window.location.href = "index.html";
         }
