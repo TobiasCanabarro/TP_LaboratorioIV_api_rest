@@ -1,8 +1,10 @@
 package edu.utn.services;
 
+import com.google.gson.JsonArray;
 import edu.utn.entity.Login;
 import edu.utn.entity.User;
 import edu.utn.enums.Result;
+import edu.utn.factory.LoginFactory;
 import edu.utn.factory.UserFactory;
 import edu.utn.factory.UserManagerFactory;
 import edu.utn.log.LogHelper;
@@ -44,23 +46,25 @@ public class LoginServices {
         UserManager manager = UserManagerFactory.create();
         List<User> users = manager.getAllUser();
 
-        JSONArray jsonArray = new JSONArray();
-        JSONObject jsonObject = null;
+        JSONArray jsonArray = UserFactory.create(users);
 
-        for (User user : users){
-            jsonObject = new JSONObject();
-            jsonObject.put("idUser", user.getId());
-            jsonObject.put("name", user.getName());
-            jsonObject.put("surname", user.getSurname());
-            jsonObject.put("password", user.getPassword());
-            jsonObject.put("email", user.getEmail());
-            jsonObject.put("nickname", user.getNickname());
-            jsonObject.put("birthday", user.getBirthday());
-            jsonObject.put("attemptLogIn", user.getAttemptLogin());
-            jsonObject.put("locked", user.isLocked());
-            jsonObject.put("logIn", user.isLogIn());
-            jsonArray.put(jsonObject);
-        }
+//        JSONArray jsonArray = new JSONArray();
+//        JSONObject jsonObject = null;
+//
+//        for (User user : users){
+//            jsonObject = new JSONObject();
+//            jsonObject.put("idUser", user.getId());
+//            jsonObject.put("name", user.getName());
+//            jsonObject.put("surname", user.getSurname());
+//            jsonObject.put("password", user.getPassword());
+//            jsonObject.put("email", user.getEmail());
+//            jsonObject.put("nickname", user.getNickname());
+//            jsonObject.put("birthday", user.getBirthday());
+//            jsonObject.put("attemptLogIn", user.getAttemptLogin());
+//            jsonObject.put("locked", user.isLocked());
+//            jsonObject.put("logIn", user.isLogIn());
+//            jsonArray.put(jsonObject);
+//        }
 
         return jsonArray.toString();
     }
@@ -71,14 +75,9 @@ public class LoginServices {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String logIn(String body) {
-        System.out.println(body);
-        JSONObject req = new JSONObject(body);
-        String email = req.getString("email");
-        String pass = req.getString("password");
 
-        Login login = new Login();
-        login.setEmail(email);
-        login.setPasword(pass);
+        JSONObject req = new JSONObject(body);
+        Login login = LoginFactory.create(req);
 
         UserManager manager = UserManagerFactory.create();
         Result value = manager.logIn(login.getEmail(), login.getPasword());
@@ -91,7 +90,7 @@ public class LoginServices {
     @Path("signin")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String singIn(String body) throws MessagingException {
+    public String singIn(String body) {
 
         JSONObject jsonObject = new JSONObject(body);
         User user = UserFactory.create(jsonObject);
@@ -134,6 +133,7 @@ public class LoginServices {
     @Path("requestUnlockedAccount")
     @Consumes(MediaType.APPLICATION_JSON)
     public void requestUnlockedAccount (String body){
+
         JSONObject jsonObject = new JSONObject(body);
         UserManager manager = UserManagerFactory.create();
         String email = jsonObject.getString("email");
@@ -176,12 +176,7 @@ public class LoginServices {
         User user = manager.get(email);
 
         if(user != null){
-            try {
-                Mail.sendMail(email, Result.RESET_PASSWORD, "http://localhost:8080/webapi/resetPassword.html");
-            }
-            catch (MessagingException exception){
-                LogHelper.createNewErrorLog(exception.getMessage());
-            }
+            Mail.sendMail(email, Result.RESET_PASSWORD, "http://localhost:8080/webapi/resetPassword.html");
         }
     }
 
@@ -202,13 +197,8 @@ public class LoginServices {
         Result result = Result.CHANGE_PASSWORD_FAIL;
 
         if(value){
-           try {
-               result = Result.CHANGE_PASSWORD;
-               Mail.sendMail(email, result, "Se cambio la contrasenia");
-           }
-           catch (MessagingException exception){
-               LogHelper.createNewErrorLog(exception.getMessage());
-           }
+            result = Result.CHANGE_PASSWORD;
+            Mail.sendMail(email, result, "Se cambio la contrasenia");
         }
 
         JSONObject response = new JSONObject(result);

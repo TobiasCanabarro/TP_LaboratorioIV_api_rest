@@ -12,9 +12,9 @@ function logIn (){
 
 function requestLogin (){
     
-    var body = logIn();
+    let body = logIn();
 	console.log('myBody', body);
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
 
     request.open('POST', 'rest/login/login', true);
     request.setRequestHeader('Content-Type', 'application/json');

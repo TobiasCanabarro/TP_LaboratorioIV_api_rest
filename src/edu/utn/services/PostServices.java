@@ -30,6 +30,7 @@ public class PostServices {
         return result.toString();
     }
 
+    //Este metodo obtiene todos los posteos del usuario, tanto como los propios, como de los amigos.
     @GET
     @Path("myPosts")
     @Consumes(MediaType.APPLICATION_JSON)

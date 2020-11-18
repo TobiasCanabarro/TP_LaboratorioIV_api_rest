@@ -1,18 +1,21 @@
 package edu.utn.services;
 
 import edu.utn.entity.RequestRelationship;
+import edu.utn.entity.User;
 import edu.utn.enums.Result;
 import edu.utn.factory.RequestRelationshipManagerFactory;
+import edu.utn.factory.UserFactory;
+import edu.utn.factory.UserManagerFactory;
 import edu.utn.manager.RequestRelationshipManager;
+import edu.utn.manager.UserManager;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
-@Path("request")
+@Path("friend")
 public class RequestRelationshipServices {
 
     @POST
@@ -102,8 +105,25 @@ public class RequestRelationshipServices {
         return response.toString();
     }
 
+    @POST
+    @Path("myFriends")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String myFriends (String body) {
 
+        JSONObject jsonObject = new JSONObject(body);
+        String email = jsonObject.getString("email");
 
+        RequestRelationshipManager manager = RequestRelationshipManagerFactory.create();
+        UserManager userManager = UserManagerFactory.create();
+        User user = userManager.get(email);
+
+        List<User> myFriends = manager.myFriends(user.getId());
+
+        JSONArray response = UserFactory.create(myFriends);
+
+        return response.toString();
+    }
 
 
 }
