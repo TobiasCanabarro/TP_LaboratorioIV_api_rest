@@ -1,40 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="css/style.css">
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="controllers/profileController.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+
+<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>-->
+<!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>-->
     <meta charset="UTF-8">
     <title>Profile</title>
 </head>
 <body>
 
-    <div class="mainP">
-        <p class="sign" align="center">Profile</p>
+    <div class="mainP" align="center">
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Surname</th>
-                    <th>Nickname</th>
-                    <th>Birthday</th>
-                    <th>Email</th>
-            </thead>
-            <tbody>
-                <tr>
-                    <td id="nameUser"></td>
-                    <td id="surname"></td>
-                    <td id="nickname"></td>
-                    <td id="birthday"></td>
-                    <td id="email"></td>
-                </tr>
-            </tbody>
-        </table>
+        <section class="call-6 offset-fixed">
+            <div class="col-md-6">
+                <label for="">Name</label>
+                <input type="text" id="nameUser" class="form-control" value="">
+            </div>
+            <div class="col-md-6">
+                <label for="">Surname</label>
+                <input type="text" id="surname" class="form-control" value="">
+            </div>
+            <div class="col-md-6">
+                <label for="">Nickname</label>
+                <input type="text" id="nickname" class="form-control" value="">
+            </div>
+            <div class="col-md-6">
+                <label for="">Email</label>
+                <input type="text" id="email" class="form-control" value="">
+            </div>
+            <div class="col-md-6">
+                <label for="">Birthday</label>
+                <input type="date" id="birthday" align="center">
+            </div>
+            <a class="submit" onclick="requestSaveChange();" align="center">Save change</a>
+        </section>
+
     </div>
 </body>
+    <script>
+        document.getElementById("nameUser").value = 'pforci';
+    </script>
+<!--    <script src="controllers/profileController.js"></script>-->
 </html>

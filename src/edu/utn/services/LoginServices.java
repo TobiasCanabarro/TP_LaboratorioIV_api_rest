@@ -196,8 +196,13 @@ public class LoginServices {
     }
 
 
-
-
+    @POST
+    @Path("changeProfile")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String changeProfile (String body){
+        return null;
+    }
 
 
 
