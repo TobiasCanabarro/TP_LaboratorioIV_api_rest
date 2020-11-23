@@ -6,6 +6,7 @@ import edu.utn.enums.Result;
 import edu.utn.factory.RequestRelationshipManagerFactory;
 import edu.utn.factory.UserFactory;
 import edu.utn.factory.UserManagerFactory;
+import edu.utn.mail.Mail;
 import edu.utn.manager.RequestRelationshipManager;
 import edu.utn.manager.UserManager;
 import org.json.JSONArray;
@@ -34,6 +35,7 @@ public class RequestRelationshipServices {
 
         if(value){
             result = Result.OK;
+            Mail.sendMail(receiveEmail, Result.SEND_REQUEST_OK, "El usuario " + sendEmail + " te envio una solicitud de amistad!");
         }
 
         JSONObject response = new JSONObject(result);

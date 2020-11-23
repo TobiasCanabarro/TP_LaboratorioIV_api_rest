@@ -28,6 +28,10 @@ function response (request) {
         localStorage.setItem('myUser', myUser);
         console.log(myUser);
         document.getElementById("nameUser").innerHTML = myUser.name;
+        document.getElementById("surname").innerHTML = myUser.surname;
+        document.getElementById("nickname").innerHTML = myUser.nickname;
+        document.getElementById("birthday").innerHTML = myUser.birthday;
+        document.getElementById("email").innerHTML = myUser.email;
     }
 }
 

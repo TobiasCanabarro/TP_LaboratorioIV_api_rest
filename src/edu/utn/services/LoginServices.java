@@ -1,18 +1,16 @@
 package edu.utn.services;
 
-import com.google.gson.JsonArray;
+import edu.utn.entity.ListUser;
 import edu.utn.entity.Login;
 import edu.utn.entity.User;
 import edu.utn.enums.Result;
 import edu.utn.factory.LoginFactory;
 import edu.utn.factory.UserFactory;
 import edu.utn.factory.UserManagerFactory;
-import edu.utn.log.LogHelper;
 import edu.utn.mail.Mail;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import edu.utn.manager.UserManager;
-import javax.mail.MessagingException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -48,25 +46,11 @@ public class LoginServices {
 
         JSONArray jsonArray = UserFactory.create(users);
 
-//        JSONArray jsonArray = new JSONArray();
-//        JSONObject jsonObject = null;
-//
-//        for (User user : users){
-//            jsonObject = new JSONObject();
-//            jsonObject.put("idUser", user.getId());
-//            jsonObject.put("name", user.getName());
-//            jsonObject.put("surname", user.getSurname());
-//            jsonObject.put("password", user.getPassword());
-//            jsonObject.put("email", user.getEmail());
-//            jsonObject.put("nickname", user.getNickname());
-//            jsonObject.put("birthday", user.getBirthday());
-//            jsonObject.put("attemptLogIn", user.getAttemptLogin());
-//            jsonObject.put("locked", user.isLocked());
-//            jsonObject.put("logIn", user.isLogIn());
-//            jsonArray.put(jsonObject);
-//        }
+        ListUser listUser = new ListUser();
+        listUser.setUserList(jsonArray);
 
-        return jsonArray.toString();
+        JSONObject jsonObject = new JSONObject(listUser);
+        return  jsonObject.toString();
     }
 
     //Response.status(Response.Status.OK).entity(response.toString()).build();
@@ -81,6 +65,10 @@ public class LoginServices {
 
         UserManager manager = UserManagerFactory.create();
         Result value = manager.logIn(login.getEmail(), login.getPasword());
+
+        if(value == Result.LOG_IN_OK){
+            Mail.sendMail(login.getEmail(), value, "Se inicio sesion en su cuenta");
+        }
 
         JSONObject response = new JSONObject(value);
         return response.toString();
@@ -109,19 +97,21 @@ public class LoginServices {
     }
 
     @POST
-    @Path("logout")
+    @Path("logOut")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String logOut(String id){
+    public String logOut(String email){
 
-        JSONObject req = new JSONObject(id);
-        long idUser = Long.valueOf(req.getString("id_user"));
+        JSONObject jsonObject = new JSONObject(email);
+
         UserManager manager = UserManagerFactory.create();
-        boolean value = manager.logOut(idUser);
+        User user = manager.get( jsonObject.getString("email") );
 
-        Result resultLogOut = Result.LOG_OUT_FAIL;
+        boolean value = manager.logOut(user.getId());
+
+        Result resultLogOut = Result.ERR;
         if(value){
-            resultLogOut = Result.LOG_OUT_OK;
+            resultLogOut = Result.OK;
         }
 
         JSONObject response = new JSONObject(resultLogOut);
