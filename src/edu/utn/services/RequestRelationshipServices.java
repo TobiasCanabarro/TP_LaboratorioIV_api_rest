@@ -35,7 +35,6 @@ public class RequestRelationshipServices {
 
         if(value){
             result = Result.OK;
-            Mail.sendMail(receiveEmail, Result.SEND_REQUEST_OK, "El usuario " + sendEmail + " te envio una solicitud de amistad!");
         }
 
         JSONObject response = new JSONObject(result);
@@ -57,7 +56,6 @@ public class RequestRelationshipServices {
         if(value){
             result = Result.OK;
         }
-
 
         JSONObject response = new JSONObject(result);
         return response.toString();

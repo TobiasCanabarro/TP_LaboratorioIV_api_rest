@@ -12,6 +12,7 @@ let signInObject = () => {
 }
 
 var response = (request) => {
+
     var obj = request.responseText;
     var json = JSON.parse(obj);
     if(obj){
@@ -28,11 +29,14 @@ var response = (request) => {
 }
 
 var requestSignIn = () => {
+
     const body = signInObject();
-    console.log('myBody', body);
+
     var request = new XMLHttpRequest();
+
     request.open('POST', 'rest/login/signin', true);
     request.setRequestHeader('Content-Type', 'application/json');
+
     request.onload=()=> response(request);
     request.send(JSON.stringify(body));
 }

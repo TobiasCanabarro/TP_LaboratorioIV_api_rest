@@ -12,14 +12,15 @@
     <meta charset="UTF-8">
     <title>Profile</title>
 </head>
-<body>
+<body onload="requestLoadProfile();">
 
     <div class="mainP" align="center">
 
         <section class="call-6 offset-fixed">
             <div class="col-md-6">
                 <label for="">Name</label>
-                <input type="text" id="nameUser" class="form-control" value="">
+<!--                <input type="text" id="nameUser" class="form-control" value="">-->
+                <input type="text" id="nameUser" class="form-control">
             </div>
             <div class="col-md-6">
                 <label for="">Surname</label>
@@ -37,10 +38,13 @@
                 <label for="">Birthday</label>
                 <input type="date" id="birthday" align="center">
             </div>
-            <a class="submit" onclick="requestSaveChange();" align="center">Save change</a>
+            <div class="">
+                <a class="submit" onclick="requestSaveChange();" align="center">Save change</a>
+            </div>
+
         </section>
 
-    </div>7
+    </div>
 </body>
 
     <script src="controllers/profileController.js"></script>

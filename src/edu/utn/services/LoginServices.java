@@ -8,15 +8,17 @@ import edu.utn.factory.LoginFactory;
 import edu.utn.factory.UserFactory;
 import edu.utn.factory.UserManagerFactory;
 import edu.utn.mail.Mail;
+import edu.utn.validator.ProfileValidator;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import edu.utn.manager.UserManager;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 
-@Path("login")//user
+@Path("login")
 public class LoginServices {
 
 
@@ -66,10 +68,6 @@ public class LoginServices {
         UserManager manager = UserManagerFactory.create();
         Result value = manager.logIn(login.getEmail(), login.getPasword());
 
-        if(value == Result.LOG_IN_OK){
-            Mail.sendMail(login.getEmail(), value, "Se inicio sesion en su cuenta");
-        }
-
         JSONObject response = new JSONObject(value);
         return response.toString();
     }
@@ -88,7 +86,6 @@ public class LoginServices {
         Result result = Result.SIGN_IN_FAIL;
 
         if(value){
-            Mail.sendMail(user.getEmail(), Result.SIGN_IN_OK, "Gracias por registrarse!");
             result = Result.SIGN_IN_OK;
         }
 
@@ -163,11 +160,7 @@ public class LoginServices {
         String email = jsonObject.getString("email");
 
         UserManager manager = UserManagerFactory.create();
-        User user = manager.get(email);
-
-        if(user != null){
-            Mail.sendMail(email, Result.RESET_PASSWORD, "http://localhost:8080/webapi/resetPassword.html");
-        }
+        manager.forgotPassword(email);
     }
 
     //Reinicia la contrasena. Toma la nueva contrasena del input del html
@@ -188,7 +181,6 @@ public class LoginServices {
 
         if(value){
             result = Result.CHANGE_PASSWORD;
-            Mail.sendMail(email, result, "Se cambio la contrasenia");
         }
 
         JSONObject response = new JSONObject(result);
@@ -197,11 +189,30 @@ public class LoginServices {
 
 
     @POST
-    @Path("changeProfile")
+    @Path("modifyProfile")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public String changeProfile (String body){
-        return null;
+    public Response modifyProfile(String body){
+
+        JSONObject jsonObject = new JSONObject(body);
+
+        ProfileValidator validator = new ProfileValidator();
+        UserManager manager = UserManagerFactory.create();
+
+        User userWithoutChange = manager.get(jsonObject.getString("id"));
+        User userWithChange = UserFactory.create(jsonObject, userWithoutChange);
+
+        boolean value = validator.isValid(userWithoutChange, userWithChange);
+        Result result = Result.ERR;
+
+        if(value){
+            manager.update(userWithChange);
+            result = Result.OK;
+        }
+
+        JSONObject response = new JSONObject(result);
+
+        return  Response.status(Response.Status.OK).entity(response.toString()).build();
     }
 
 

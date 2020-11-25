@@ -15,18 +15,19 @@ let requestLoadProfile = () => {
     request.open('POST', 'rest/login/getUser');
     request.setRequestHeader('Content-Type', 'application/json');
 
-    request.onload = () => response(request);
+    request.onload = () => responseLoadProfile(request);
     request.send(JSON.stringify(body));
 }
 
 
-function response (request) {
+function responseLoadProfile (request) {
     let object = request.responseText;
     let myUser = JSON.parse(object);
 
     if(myUser != undefined){
+
         localStorage.setItem('myUser', myUser);
-        console.log(myUser);
+
         document.getElementById("nameUser").value = myUser.name;
         document.getElementById("surname").value = myUser.surname;
         document.getElementById("nickname").value = myUser.nickname;
@@ -38,30 +39,40 @@ function response (request) {
 //**********************************
 
 let changeObject = () => {
+
     let obj = {};
-    obj.name = document.getElementById("userName").value;
+    obj.id = localStorage.getItem("email");
+    obj.name = document.getElementById("nameUser").value;
     obj.surname = document.getElementById("surname").value;
     obj.nickname = document.getElementById("nickname").value;
     obj.email = document.getElementById("email").value;
     obj.birthday = document.getElementById("birthday").value;
+
     return obj;
 }
 
 let requestSaveChange = () => {
+
     let body = changeObject();
     let request = new XMLHttpRequest();
 
-    request.open('POST', 'rest/login/changeProfile');
+    request.open('POST', 'rest/login/modifyProfile');
     request.setRequestHeader('Content-Type', 'application/json');
 
-    request.onload = () => responseSaveChange(request);
+    request.onload = () => response(request);
     request.send(JSON.stringify(body));
 
 }
 
-let responseSaveChange = (request) = {
+let response = (request) => {
 
+    let obj = request.responseText;
+
+    if(obj){
+        let body = JSON.parse(obj);
+        alert(body.description);
+    }
 }
 
 
-requestLoadProfile();
+//requestLoadProfile();
