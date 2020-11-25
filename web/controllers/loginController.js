@@ -1,6 +1,14 @@
 
+let isLogin = () => {
 
-function logIn (){
+    let login = localStorage.getItem("email");
+    if(login != null){
+        window.location.href = "home.html";
+    }
+}
+
+
+function logInObject (){
     let obj = {};
 
     obj.email = document.querySelector(".un").value;
@@ -12,7 +20,7 @@ function logIn (){
 
 function requestLogin (){
     
-    let body = logIn();
+    let body = logInObject();
 	console.log('myBody', body);
     let request = new XMLHttpRequest();
 
@@ -31,7 +39,7 @@ let response = (request) => {
     if(object){
         let json = JSON.parse(object);
         if(json.description == "Log in successful"){//Reemplazar por ok, fail o algo asi (un objecto)
-            window.location.href = "inicio.html";
+            window.location.href = "home.html";
         }
         else {
             alert(json.description);
@@ -40,7 +48,7 @@ let response = (request) => {
 }
 
 let toHome = ()=>{
-    window.location.href = "inicio.html";
+    window.location.href = "home.html";
 }
 
 

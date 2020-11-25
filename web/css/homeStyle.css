@@ -1,0 +1,40 @@
+
+.navbar {
+    box-shadow: 2px 2px 5px #000;
+    opacity: .7;
+}
+
+.navbar .nav-item .nav-link {
+    color : #000;
+}
+
+/*.seccion {*/
+/*    margin: 20px;*/
+/*    width: 60%;*/
+/*    float: left;*/
+/*}*/
+
+article {
+    background: #dad7d8;
+    border: 1px solid #999;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+.agrupar {
+    width: 960px;
+    /* border: 1px solid black; */
+    margin: 15px auto;
+}
+
+.buttonMargin {
+    margin: 15px auto;
+}
+
+.buttonPadding {
+    /* padding-left: 200px; */
+    align-items: 100px;
+}
+/*
+box-shadow: 2px 2px 5px #000;
+    opacity: .7; */

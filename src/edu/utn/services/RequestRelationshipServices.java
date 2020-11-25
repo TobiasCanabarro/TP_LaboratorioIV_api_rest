@@ -1,6 +1,6 @@
 package edu.utn.services;
 
-import edu.utn.entity.RequestRelationship;
+import edu.utn.entity.EntityList;
 import edu.utn.entity.User;
 import edu.utn.enums.Result;
 import edu.utn.factory.RequestRelationshipManagerFactory;
@@ -122,10 +122,14 @@ public class RequestRelationshipServices {
 
         List<User> myFriends = manager.myFriends(user.getId());
 
-        JSONArray response = UserFactory.create(myFriends);
+        JSONArray jsonArray = UserFactory.create(myFriends);
+
+        EntityList list = new EntityList();
+        list.setList(jsonArray);
+
+        JSONObject response = new JSONObject(list);
 
         return response.toString();
     }
-
 
 }

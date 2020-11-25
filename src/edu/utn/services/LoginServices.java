@@ -1,6 +1,6 @@
 package edu.utn.services;
 
-import edu.utn.entity.ListUser;
+import edu.utn.entity.EntityList;
 import edu.utn.entity.Login;
 import edu.utn.entity.User;
 import edu.utn.enums.Result;
@@ -46,10 +46,10 @@ public class LoginServices {
 
         JSONArray jsonArray = UserFactory.create(users);
 
-        ListUser listUser = new ListUser();
-        listUser.setUserList(jsonArray);
+        EntityList userList = new EntityList();
+        userList.setList(jsonArray);
 
-        JSONObject jsonObject = new JSONObject(listUser);
+        JSONObject jsonObject = new JSONObject(userList);
         return  jsonObject.toString();
     }
 

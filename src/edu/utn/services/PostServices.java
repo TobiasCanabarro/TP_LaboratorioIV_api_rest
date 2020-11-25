@@ -1,7 +1,9 @@
 package edu.utn.services;
 
+import edu.utn.entity.EntityList;
 import edu.utn.entity.User;
 import edu.utn.entity.UserPost;
+import edu.utn.enums.Result;
 import edu.utn.factory.UserManagerFactory;
 import edu.utn.factory.UserPostManagerFactory;
 import edu.utn.manager.PostManager;
@@ -21,13 +23,25 @@ public class PostServices {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String newPost (String body){
+
         PostManager manager = UserPostManagerFactory.create();
         JSONObject jsonObject = new JSONObject(body);
 
-        boolean value = manager.newPost(jsonObject.getString("post"), Long.valueOf(jsonObject.getString("idUser")));
+        String email = jsonObject.getString("email");
+        String post = jsonObject.getString("post");
 
-        JSONObject result = new JSONObject(value);
-        return result.toString();
+        UserManager userManager = UserManagerFactory.create();
+        User user = userManager.get(email);
+
+        boolean value = manager.newPost(post, user.getId());
+        Result result = Result.ERR;
+
+        if(value){
+            result = Result.OK;
+        }
+
+        JSONObject jsonResult = new JSONObject(result);
+        return jsonResult.toString();
     }
 
     //Este metodo obtiene todos los posteos del usuario, tanto como los propios, como de los amigos.
@@ -36,28 +50,38 @@ public class PostServices {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String myPosts (String body){
+
         PostManager manager = UserPostManagerFactory.create();
         JSONObject jsonObject = new JSONObject(body);
-        List<UserPost> posts = manager.myPosts(Long.valueOf(jsonObject.getString("idUser")));
 
-        //Obtengo los nombres y apellidos de los usuarios de mis publicaciones
+        String email = jsonObject.getString("email");
 
         UserManager userManager = UserManagerFactory.create();
+        User user = userManager.get(email);
+
+        //Obtengo los nombres y apellidos de los usuarios de mis publicaciones
+        List<UserPost> posts = manager.myPosts(user.getId());
+
         JSONArray jsonArray = new JSONArray();
-        JSONObject response = null;
-        User user = null;
+        jsonObject = null;
+        user = null;
 
         for(UserPost postElement : posts){
-            response = new JSONObject();
-            user = userManager.get(postElement.getIdUser());
-            response.put("idPost", postElement.getId());
-            response.put("user", user.getName() + " " + user.getSurname());
-            response.put("date", postElement.getDatePublication());
-            response.put("post", postElement.getPost());
-            jsonArray.put(response);
+            jsonObject = new JSONObject();
+            user = userManager.get(postElement.getIdUser());//Busco los datos del usuario que hizo la publicacion
+            jsonObject.put("idPost", postElement.getId());
+            jsonObject.put("user", user.getName() + " " + user.getSurname());
+            jsonObject.put("date", postElement.getDatePublication());
+            jsonObject.put("post", postElement.getPost());
+            jsonArray.put(jsonObject);
         }
 
-        return  jsonArray.toString();
+        EntityList entityList = new EntityList();
+        entityList.setList(jsonArray);
+
+        JSONObject response = new JSONObject(entityList);
+
+        return  response.toString();
     }
 
 

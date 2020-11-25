@@ -26,6 +26,7 @@ function response (request) {
 
     if(myUser != undefined){
         localStorage.setItem('myUser', myUser);
+        console.log(myUser);
         document.getElementById("nameUser").value = myUser.name;
         document.getElementById("surname").value = myUser.surname;
         document.getElementById("nickname").value = myUser.nickname;
@@ -33,6 +34,8 @@ function response (request) {
         document.getElementById("email").value = myUser.email;
     }
 }
+
+//**********************************
 
 let changeObject = () => {
     let obj = {};
@@ -61,4 +64,4 @@ let responseSaveChange = (request) = {
 }
 
 
-//requestLoadProfile();
+requestLoadProfile();
