@@ -7,7 +7,6 @@ import edu.utn.enums.Result;
 import edu.utn.factory.LoginFactory;
 import edu.utn.factory.UserFactory;
 import edu.utn.factory.UserManagerFactory;
-import edu.utn.mail.Mail;
 import edu.utn.validator.ProfileValidator;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -60,17 +59,18 @@ public class LoginServices {
     @Path("login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String logIn(String body) {
+    public Response logIn(String body) {
 
-        JSONObject req = new JSONObject(body);
-        Login login = LoginFactory.create(req);
+        JSONObject jsonObject = new JSONObject(body);
+        Login login = LoginFactory.create(jsonObject);
 
         UserManager manager = UserManagerFactory.create();
         Result value = manager.logIn(login.getEmail(), login.getPasword());
 
         JSONObject response = new JSONObject(value);
-        return response.toString();
+        return Response.status(Response.Status.OK).entity(response.toString()).build();
     }
+
 
     @POST
     @Path("signin")
@@ -134,6 +134,7 @@ public class LoginServices {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String unLockedAccount (String body) {
+
         JSONObject jsonObject = new JSONObject(body);
 
         UserManager manager = UserManagerFactory.create();

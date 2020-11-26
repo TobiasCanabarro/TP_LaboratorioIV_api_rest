@@ -4,7 +4,7 @@ import org.json.JSONArray;
 
 public class EntityList {
 
-    private JSONArray list;
+    private JSONArray list;//userList
 
     public JSONArray getList() { return list; }
 

@@ -1,19 +1,22 @@
 
 
-
 var getMyFriends = ()=>{
 
     var request = new XMLHttpRequest();
+
+    let body = {};
+    body.email = localStorage.getItem("email");
 
     request.open('POST','rest/friend/myFriends', true);
     request.setRequestHeader('Content-Type', 'application/json');
     request.onload = () => response(request);
 
-    request.send();
+    request.send(JSON.stringify(body));
 }
 
 
 var response=(request)=>{
+
     var object = request.responseText;
     var json = JSON.parse(object);
     var i = 0;
@@ -26,7 +29,7 @@ var response=(request)=>{
 
     console.log('Mi lista de amigos', json);
 
-    json.forEach(e=>{
+    json.list.forEach(e=>{
         var row = tbody.insertRow(i),
             name = row.insertCell(0),
             surname = row.insertCell(1),
@@ -41,14 +44,14 @@ var response=(request)=>{
         var inputSelectUser = document.createElement('input');
         inputSelectUser.type= 'button';
         inputSelectUser.value = 'Delete Friendship';
-        inputSelectUser.id = e.email;
+        inputSelectUser.id = e.idUser;
         //inputSelectUser.onclick = "formUsers(btnSendUsers)";
 
         inputSelectUser.onclick = function formUsers() {
             var resUser = {};
-            var email = inputSelectUser.id;
+            var id = inputSelectUser.id;
 
-            resUser.result = deleteRelationship(email);
+            resUser.result = deleteRelationship(id);
         };
 
         selectUser.appendChild(inputSelectUser);
@@ -59,18 +62,19 @@ var response=(request)=>{
     i = 0;
 }
 
-var deleteRelationship = (email)=>{
+var deleteRelationship = (id)=>{
 
     var body ={};
-    body.receiveEmail = email;
-    body.sendEmail = localStorage.getItem("email");
+    body.receiveUserId = id;
+    body.sendUserId = localStorage.getItem("myUserId");
+    console.log(body);
 
     var request = new XMLHttpRequest();
 
     request.open('POST','rest/friend/deleteRelation', true);
     request.setRequestHeader('Content-Type', 'application/json');
-    request.onload = () => responseDelete(request);
 
+    request.onload = () => responseDelete(request);
     request.send(JSON.stringify(body));
 
 }
@@ -80,6 +84,7 @@ var responseDelete = (request)=>{
     var object = request.responseText;
     var json = JSON.parse(object);
     alert(json.description);
+    getMyFriends();
     console.log(json.description);
 }
 

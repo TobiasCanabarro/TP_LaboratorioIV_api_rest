@@ -4,15 +4,15 @@
 var getAllUser = ()=>{
 
     var request = new XMLHttpRequest();
-    
+
     request.open('GET','rest/login/getAllUser', true);
     request.onload = () => response(request);
 
-    request.send();    
+    request.send();
 }
 
 
-var response=(request)=>{    
+var response=(request)=>{
     var object = request.responseText;
     var json = JSON.parse(object);
     var i = 0;
@@ -25,12 +25,12 @@ var response=(request)=>{
 
     console.log('Mi lista de usuarios', json);
 
-    json.userList.forEach(e=>{
+    json.list.forEach(e=>{
         var row = tbody.insertRow(i),
-        name = row.insertCell(0),
-        surname = row.insertCell(1),
-        birthday = row.insertCell(2),
-        selectUser = row.insertCell(3);
+            name = row.insertCell(0),
+            surname = row.insertCell(1),
+            birthday = row.insertCell(2),
+            selectUser = row.insertCell(3);
 
         name.innerHTML = e.name;
         surname.innerHTML = e.surname;
@@ -38,9 +38,9 @@ var response=(request)=>{
 
 
         var inputSelectUser = document.createElement('input');
-		inputSelectUser.type= 'button';
-		inputSelectUser.value = 'send Request';
-		inputSelectUser.id = e.email;
+        inputSelectUser.type= 'button';
+        inputSelectUser.value = 'send Request';
+        inputSelectUser.id = e.email;
         //inputSelectUser.onclick = "formUsers(btnSendUsers)";
 
         inputSelectUser.onclick = function formUsers() {
@@ -52,7 +52,7 @@ var response=(request)=>{
 
         selectUser.appendChild(inputSelectUser);
 
-		tbody.appendChild(row);
+        tbody.appendChild(row);
         i++;
     })
     i = 0;

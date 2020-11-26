@@ -1,6 +1,7 @@
 package edu.utn.services;
 
 import edu.utn.entity.EntityList;
+import edu.utn.entity.RequestRelationship;
 import edu.utn.entity.User;
 import edu.utn.enums.Result;
 import edu.utn.factory.RequestRelationshipManagerFactory;
@@ -90,10 +91,15 @@ public class RequestRelationshipServices {
     public String deleteRelation (String body) {
 
         JSONObject jsonObject = new JSONObject(body);
-        long idRelation = jsonObject.getLong("idRelation");
+
+        long receiveUserId = jsonObject.getLong("receiveUserId");
+        long sendUserId = jsonObject.getLong("sendUserId");
 
         RequestRelationshipManager manager = RequestRelationshipManagerFactory.create();
-        boolean value = manager.deleteRelationship(idRelation);
+
+        RequestRelationship relationship = manager.get(receiveUserId, sendUserId);
+
+        boolean value = manager.deleteRelationship(relationship.getId());
         Result result = Result.ERR;
 
         if(value){
