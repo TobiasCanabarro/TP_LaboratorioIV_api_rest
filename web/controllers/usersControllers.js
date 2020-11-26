@@ -13,6 +13,7 @@ var getAllUser = ()=>{
 
 
 var response=(request)=>{
+
     var object = request.responseText;
     var json = JSON.parse(object);
     var i = 0;
@@ -77,6 +78,7 @@ var SendRequest = (email)=>{
 var responseFriend = (request)=>{
 
     var object = request.responseText;
+
     var json = JSON.parse(object);
     alert(json.description);
     console.log(json.description);

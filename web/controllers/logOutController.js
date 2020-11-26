@@ -3,8 +3,7 @@
 let logOutObject = () => {
 
     let obj = {};
-    obj.email = localStorage.getItem("email");
-    localStorage.clear();
+    obj.id = localStorage.getItem("myUserId");
 
     return obj;
 }
@@ -17,13 +16,30 @@ let requestLogOut = () => {
     request.open('POST', 'rest/login/logOut', true);
     request.setRequestHeader('Content-Type', 'application/json');
 
-    request.onload=()=> responseLogOut();
+    request.onload=()=> responseLogOut(request);
     request.send(JSON.stringify(body));
 }
 
 
-let responseLogOut = () => {
-    window.location.href = "index.html";
+let responseLogOut = (request) => {
+
+    let obj = request.responseText;
+
+    if(obj){
+
+        let json = JSON.parse(obj);
+
+        if(request.status == 200){
+
+            if(json.description == "OK"){
+                localStorage.clear();
+                window.location.href = "index.html";
+            }
+        }
+    }
+
+
+
 }
 
 

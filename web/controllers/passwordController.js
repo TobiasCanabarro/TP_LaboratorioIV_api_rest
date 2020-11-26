@@ -2,7 +2,7 @@
 let forgotPasswordObject = () => {
     let obj = {};
     obj.email = document.querySelector("#email").value;
-    localStorage.setItem("emailforgotpass",obj.email);
+    localStorage.setItem("forgotPasswordEmail", obj.email);
     return obj;
 }
 
@@ -14,7 +14,25 @@ let requestForgotPassword = () => {
     request.open('POST', 'rest/login/forgotPassword', true);
 
     request.setRequestHeader('Content-Type', 'application/json');
+    request.onload = () => responseForgotPassword(request);
     request.send(JSON.stringify(body));
+}
+
+let responseForgotPassword = (request) => {
+
+    if(request.status == 200){
+        let obj = request.responseText;
+
+        if(obj){
+
+            let json = JSON.parse(obj);
+            alert(json.description);
+
+            if(json.description == "OK"){
+                window.location.href = 'index.html';
+            }
+        }
+    }
 }
 
 //************************************************************************************
@@ -23,38 +41,50 @@ let resetPasswordObject = () => {
 
     let obj = {};
     obj.password = document.querySelector('#pass').value;
+    obj.email = localStorage.getItem("forgotPasswordEmail");
     return obj;
 }
 
 
 let requestResetPassword = () => {
 
-    const body = resetPasswordObject();
-    let request = new XMLHttpRequest();
+    let password = document.querySelector('#pass').value;
+    let confirmation = document.querySelector('#passCheck').value;
 
-    request.open('POST', 'rest/login/resetPassword', true);
-    request.setRequestHeader('Content-Type', 'application/json');
+    if(equalsPassword(password, confirmation)){
 
-    request.onload = () => response();
-    request.send(JSON.stringify(body));
+        const body = resetPasswordObject();
+        let request = new XMLHttpRequest();
+
+        request.open('POST', 'rest/login/resetPassword', true);
+        request.setRequestHeader('Content-Type', 'application/json');
+
+        request.onload = () => response();
+        request.send(JSON.stringify(body));
+    }else {
+        alert("las contraseñas no coinciden")
+    }
 }
 
 
 let response = (request) => {
 
-    let obj = request.responseText;
-    let json = JSON.parse(obj);
+    if(request.status == 200){
 
-    if(obj){
+        let obj = request.responseText;
 
-        localStorage.setItem('responseForgotPass', obj);
+        if(obj) {
 
-        if(json.description == "Change password"){////Reemplazar por ok, fail o algo asi (un objecto)
+            let json = JSON.parse(obj);
             alert(json.description);
-            window.location.href = 'index.html';
-        }
-        else {
-            alert(json.description);
+
+            if(json.description == "OK") {
+                window.location.href = 'index.html';
+            }
         }
     }
+}
+
+let equalsPassword = (password, confirmation) => {
+    return password == confirmation;
 }

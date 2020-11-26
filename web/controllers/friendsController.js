@@ -5,12 +5,12 @@ var getMyFriends = ()=>{
     var request = new XMLHttpRequest();
 
     let body = {};
-    body.email = localStorage.getItem("email");
+    body.id = localStorage.getItem("myUserId");
 
     request.open('POST','rest/friend/myFriends', true);
     request.setRequestHeader('Content-Type', 'application/json');
-    request.onload = () => response(request);
 
+    request.onload = () => response(request);
     request.send(JSON.stringify(body));
 }
 
@@ -79,26 +79,25 @@ var deleteRelationship = (id)=>{
 
 }
 
-var responseDelete = (request)=>{
+let responseDelete = (request)=>{
 
-    var object = request.responseText;
-    var json = JSON.parse(object);
-    alert(json.description);
-    getMyFriends();
-    console.log(json.description);
+    if(request.status == 200){
+
+        let object = request.responseText;
+
+        if(object){
+
+            let json = JSON.parse(object);
+            alert(json.description);
+            getMyFriends();
+            console.log(json.description);
+        }
+    }
 }
 
-// function formUsers(btnSendUsers) {
-//     var resUser = {};
-//     var email = btnSendUsers.id;
-//
-//     resUser.result = SendRequest(email);
-//
-//     if (resUser.result == 'Ok') {
-//         ui.correct();
-//     } else {
-//         ui.danger();
-//     }
-// }
+/*
+  Faltan las funciones refuseRequest, acceptRequest
+ */
+
 
 getMyFriends();

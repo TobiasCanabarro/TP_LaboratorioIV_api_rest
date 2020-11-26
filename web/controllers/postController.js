@@ -24,17 +24,23 @@ let requestPost = () => {
 
 let responsePost = (request) => {
 
-    let obj = request.responseText;
+    if(request.status == 200){
 
-    if(obj){
+        let obj = request.responseText;
 
-        document.getElementById("post").value = "";
-        let json = JSON.parse(obj);
+        if(obj){
+            document.getElementById("post").value = "";
 
-        if(!json.description == "Ok"){////Reemplazar por ok, fail o algo asi (un objecto)
-            alert(json.description);
+            let json = JSON.parse(obj);
+
+            if(json.description != "Ok"){
+                alert(json.description);
+            }
         }
     }
+
+
+
 }
 
 

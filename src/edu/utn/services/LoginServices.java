@@ -16,7 +16,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-
 @Path("login")
 public class LoginServices {
 
@@ -28,10 +27,10 @@ public class LoginServices {
     public String getUser(String body){
 
         JSONObject jsonObject = new JSONObject(body);
-        String email = jsonObject.getString("email");
+        long id = jsonObject.getLong("id");
 
         UserManager manager = UserManagerFactory.create();
-        User user = manager.get(email);
+        User user = manager.get(id);
 
         JSONObject response = new JSONObject(user);
         return response.toString();
@@ -62,12 +61,22 @@ public class LoginServices {
     public Response logIn(String body) {
 
         JSONObject jsonObject = new JSONObject(body);
-        Login login = LoginFactory.create(jsonObject);
-
         UserManager manager = UserManagerFactory.create();
-        Result value = manager.logIn(login.getEmail(), login.getPasword());
 
-        JSONObject response = new JSONObject(value);
+        User user = manager.getValidator().isAlreadyLogin(jsonObject.getString("email"));
+        Result result = Result.ERR;
+
+        if (user != null) {
+            result = Result.OK;
+            result.setUser(user);
+        }
+        else {
+            Login login = LoginFactory.create(jsonObject);
+            result = manager.logIn(login.getEmail(), login.getPasword());
+        }
+
+        JSONObject response = new JSONObject(result);
+
         return Response.status(Response.Status.OK).entity(response.toString()).build();
     }
 
@@ -76,33 +85,35 @@ public class LoginServices {
     @Path("signin")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String singIn(String body) {
+    public Response singIn(String body) {
 
         JSONObject jsonObject = new JSONObject(body);
         User user = UserFactory.create(jsonObject);
 
         UserManager manager =  UserManagerFactory.create();
         boolean value = manager.signIn(user);
-        Result result = Result.SIGN_IN_FAIL;
+        Result result = Result.ERR;
 
         if(value){
-            result = Result.SIGN_IN_OK;
+            result = Result.OK;
         }
 
         JSONObject response = new JSONObject(result);
-        return response.toString();
+
+        return Response.status(Response.Status.OK).entity(response.toString()).build();
     }
 
     @POST
     @Path("logOut")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String logOut(String email){
+    public Response logOut(String email){
 
         JSONObject jsonObject = new JSONObject(email);
+        long id = jsonObject.getLong("id");
 
         UserManager manager = UserManagerFactory.create();
-        User user = manager.get( jsonObject.getString("email") );
+        User user = manager.get(id);
 
         boolean value = manager.logOut(user.getId());
 
@@ -112,7 +123,8 @@ public class LoginServices {
         }
 
         JSONObject response = new JSONObject(resultLogOut);
-        return response.toString();
+
+        return Response.status(Response.Status.OK).entity(response.toString()).build();
     }
 
     //Con este endpoint se solicita el desbloqueo de la cuenta
@@ -133,21 +145,21 @@ public class LoginServices {
     @Path("unlockedAccount")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String unLockedAccount (String body) {
+    public Response unLockedAccount (String body) {
 
         JSONObject jsonObject = new JSONObject(body);
 
         UserManager manager = UserManagerFactory.create();
         boolean value =  manager.unLockedAccount(jsonObject.getString("email"));
 
-        Result result = Result.UNLOCKED_ACCOUNT_FAIL;
+        Result result = Result.ERR;
 
         if(value){
-            result = Result.UNLOCKED_ACCOUNT_OK;
+            result = Result.OK;
         }
 
         JSONObject response = new JSONObject(result);
-        return response.toString();
+        return Response.status(Response.Status.OK).entity(response.toString()).build();
     }
 
 
@@ -155,20 +167,28 @@ public class LoginServices {
     @POST
     @Path("forgotPassword")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void forgotPassword (String body) {
+    public Response forgotPassword (String body) {
 
         JSONObject jsonObject = new JSONObject(body);
         String email = jsonObject.getString("email");
 
         UserManager manager = UserManagerFactory.create();
-        manager.forgotPassword(email);
+        boolean value = manager.forgotPassword(email);
+        Result result = Result.ERR;
+
+        if(value){
+            result = Result.OK;
+        }
+
+        JSONObject response = new JSONObject(result);
+        return Response.status(Response.Status.OK).entity(response.toString()).build();
     }
 
     //Reinicia la contrasena. Toma la nueva contrasena del input del html
     @POST
     @Path("resetPassword")
     @Produces(MediaType.APPLICATION_JSON)
-    public String resetPassword (String body){
+    public Response resetPassword (String body){
 
         JSONObject jsonObject = new JSONObject(body);
         String newPassword = jsonObject.getString("password");
@@ -177,6 +197,7 @@ public class LoginServices {
         UserManager manager = UserManagerFactory.create();
         User user = manager.get(email);
 
+
         boolean value = manager.changePassword(user.getId(), newPassword);
         Result result = Result.CHANGE_PASSWORD_FAIL;
 
@@ -184,8 +205,9 @@ public class LoginServices {
             result = Result.CHANGE_PASSWORD;
         }
 
+
         JSONObject response = new JSONObject(result);
-        return  response.toString();
+        return  Response.status(Response.Status.OK).entity(response.toString()).build();
     }
 
 
@@ -200,7 +222,7 @@ public class LoginServices {
         ProfileValidator validator = new ProfileValidator();
         UserManager manager = UserManagerFactory.create();
 
-        User userWithoutChange = manager.get(jsonObject.getString("id"));
+        User userWithoutChange = manager.get(jsonObject.getString("id"));//El id en este caso es el email
         User userWithChange = UserFactory.create(jsonObject, userWithoutChange);
 
         boolean value = validator.isValid(userWithoutChange, userWithChange);

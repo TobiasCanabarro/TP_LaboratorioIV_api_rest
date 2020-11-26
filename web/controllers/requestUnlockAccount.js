@@ -40,10 +40,14 @@ let unlockAccount = () => {
 let responseUnlockAccount = (request) => {
     let obj = request.responseText;
 
-    if(obj){
-        let json = JSON.parse(obj);
-        console.log(json);
-        alert(json.description);
+    if(request.status == 200){
+        if(obj){
+
+            let json = JSON.parse(obj);
+            alert(json.description);
+        }
+        window.location.href = "index.html";
     }
-    window.location.href = "index.html";
+
+
 }

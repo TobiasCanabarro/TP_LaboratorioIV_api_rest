@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Path("post")
@@ -22,7 +23,7 @@ public class PostServices {
     @Path("newPost")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String newPost (String body){
+    public Response newPost (String body){
 
         PostManager manager = UserPostManagerFactory.create();
         JSONObject jsonObject = new JSONObject(body);
@@ -41,7 +42,7 @@ public class PostServices {
         }
 
         JSONObject jsonResult = new JSONObject(result);
-        return jsonResult.toString();
+        return Response.status(Response.Status.OK).entity(jsonResult.toString()).build();
     }
 
     //Este metodo obtiene todos los posteos del usuario, tanto como los propios, como de los amigos.

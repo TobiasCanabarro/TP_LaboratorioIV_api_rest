@@ -2,7 +2,7 @@
 
 let loadProfileObject = () => {
     let obj = {};
-    obj.email = localStorage.getItem("email");
+    obj.id = localStorage.getItem("myUserId");
     return obj;
 }
 
@@ -68,10 +68,13 @@ let response = (request) => {
 
     let obj = request.responseText;
 
-    if(obj){
-        let body = JSON.parse(obj);
-        alert(body.description);
+    if(request.status == 200){
+        if(obj){
+            let body = JSON.parse(obj);
+            alert(body.description);
+        }
     }
+
 }
 
 

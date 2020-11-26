@@ -11,28 +11,11 @@ let signInObject = () => {
     return obj;
 }
 
-var response = (request) => {
-
-    var obj = request.responseText;
-    var json = JSON.parse(obj);
-    if(obj){
-        if(json.description == "Sign in successful"){////Reemplazar por ok, fail o algo asi (un objecto)
-            alert(json.description);
-            window.location.href = "index.html";
-        }
-        else {
-            alert(json.description);
-        }
-
-        localStorage.setItem('responseSignIn', obj);
-    }
-}
-
-var requestSignIn = () => {
+let requestSignIn = () => {
 
     const body = signInObject();
 
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
 
     request.open('POST', 'rest/login/signin', true);
     request.setRequestHeader('Content-Type', 'application/json');
@@ -40,4 +23,26 @@ var requestSignIn = () => {
     request.onload=()=> response(request);
     request.send(JSON.stringify(body));
 }
+
+let response = (request) => {
+
+   if(request.status == 200){
+
+       let obj = request.responseText;
+
+       if(obj){
+
+           let json = JSON.parse(obj);
+
+           if(json.description == "OK"){
+               window.location.href = "index.html";
+           }
+           else {
+               alert(json.description);
+           }
+       }
+   }
+}
+
+
 
