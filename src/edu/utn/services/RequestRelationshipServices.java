@@ -6,12 +6,15 @@ import edu.utn.entity.User;
 import edu.utn.enums.Result;
 import edu.utn.factory.RequestRelationshipManagerFactory;
 import edu.utn.factory.UserFactory;
+import edu.utn.factory.UserManagerFactory;
 import edu.utn.manager.RequestRelationshipManager;
+import edu.utn.manager.UserManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.List;
 
 @Path("friend")
@@ -47,12 +50,18 @@ public class RequestRelationshipServices {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String acceptRequest (String body){
-        RequestRelationshipManager manager = RequestRelationshipManagerFactory.create();
+
         JSONObject jsonObject = new JSONObject(body);
 
-        long idUser = jsonObject.getLong("idUser");
+        long receiveUserId = jsonObject.getLong("receiveUserId");
+        long sendUserId = jsonObject.getLong("sendUserId");
 
-        boolean value = manager.acceptRequest(idUser);
+        RequestRelationshipManager manager = RequestRelationshipManagerFactory.create();
+
+        RequestRelationship relationship = manager.get(sendUserId, receiveUserId);
+//        RequestRelationship relationship = manager.get(receiveUserId, sendUserId);
+
+        boolean value = manager.acceptRequest(relationship.getId());
         Result result = Result.ERR;
 
         if(value){
@@ -71,10 +80,16 @@ public class RequestRelationshipServices {
     public String refuseRequest (String body){
 
         JSONObject jsonObject = new JSONObject(body);
-        long idRequest = jsonObject.getLong("idRequest");
+//        long idRequest = jsonObject.getLong("idRequest");
+
+        long receiveUserId = jsonObject.getLong("receiveUserId");
+        long sendUserId = jsonObject.getLong("sendUserId");
 
         RequestRelationshipManager manager = RequestRelationshipManagerFactory.create();
-        boolean value = manager.acceptRequest(idRequest);
+
+        RequestRelationship relationship = manager.get(sendUserId, receiveUserId);
+
+        boolean value = manager.refuseRequest(relationship.getId());
         Result result = Result.ERR;
 
         if(value){
@@ -133,6 +148,36 @@ public class RequestRelationshipServices {
         JSONObject response = new JSONObject(list);
 
         return response.toString();
+    }
+
+    @POST
+    @Path("myRequests")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response myRequests (String body) {
+
+        JSONObject jsonObject = new JSONObject(body);
+        long id = jsonObject.getLong("id");//mi ID
+
+        RequestRelationshipManager manager = RequestRelationshipManagerFactory.create();
+        UserManager userManager = UserManagerFactory.create();
+
+        List<RequestRelationship> myRequest = manager.getAllRequest(id);
+        List<User> users = new ArrayList<>();
+        User user = null;
+
+        for (RequestRelationship relationship : myRequest) {
+            user = userManager.get(relationship.getIdUserSend());
+            users.add(user);
+        }
+
+        JSONArray jsonArray = new JSONArray(users);
+
+        EntityList entityList = new EntityList();
+        entityList.setList(jsonArray);
+
+        JSONObject response = new JSONObject(entityList);
+        return Response.status(Response.Status.OK).entity(response.toString()).build();
     }
 
 }

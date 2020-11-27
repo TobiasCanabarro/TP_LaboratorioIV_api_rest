@@ -5,6 +5,7 @@
       <map>
         <entry key="file://$PROJECT_DIR$/web/inicio.html" value="file://$PROJECT_DIR$/web" />
         <entry key="file://$PROJECT_DIR$/web/listFriends.html" value="file://$PROJECT_DIR$/web" />
+        <entry key="file://$PROJECT_DIR$/web/listRequestFriends.html" value="file://$PROJECT_DIR$/web" />
       </map>
     </option>
   </component>
