@@ -58,8 +58,8 @@ public class RequestRelationshipServices {
 
         RequestRelationshipManager manager = RequestRelationshipManagerFactory.create();
 
-        RequestRelationship relationship = manager.get(sendUserId, receiveUserId);
-//        RequestRelationship relationship = manager.get(receiveUserId, sendUserId);
+//        RequestRelationship relationship = manager.get(sendUserId, receiveUserId);
+        RequestRelationship relationship = manager.get(receiveUserId, sendUserId);
 
         boolean value = manager.acceptRequest(relationship.getId());
         Result result = Result.ERR;
@@ -87,7 +87,8 @@ public class RequestRelationshipServices {
 
         RequestRelationshipManager manager = RequestRelationshipManagerFactory.create();
 
-        RequestRelationship relationship = manager.get(sendUserId, receiveUserId);
+//        RequestRelationship relationship = manager.get(sendUserId, receiveUserId);
+        RequestRelationship relationship = manager.get(receiveUserId, sendUserId);
 
         boolean value = manager.refuseRequest(relationship.getId());
         Result result = Result.ERR;

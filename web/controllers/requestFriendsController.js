@@ -78,8 +78,10 @@ var response=(request)=>{
 let refuseRelation = (id) => {
 
     let body = {};
-    body.receiveUserId = id;
-    body.sendUserId = localStorage.getItem("myUserId");
+    body.receiveUserId = localStorage.getItem("myUserId");
+    body.sendUserId = id;
+    // body.receiveUserId = id;
+    // body.sendUserId = localStorage.getItem("myUserId");
 
     let request = new XMLHttpRequest();
 
@@ -94,8 +96,10 @@ let refuseRelation = (id) => {
 let acceptRelation = (id) => {
 
     let body = {};
-    body.receiveUserId = id;
-    body.sendUserId = localStorage.getItem("myUserId");
+    body.receiveUserId = localStorage.getItem("myUserId");
+    body.sendUserId = id;
+    // body.receiveUserId = id;
+    // body.sendUserId = localStorage.getItem("myUserId");
 
     let request = new XMLHttpRequest();
 
