@@ -8,9 +8,9 @@ _Estas instrucciones te permitirán obtener una copia del proyecto en funcionami
 
 Mira **Deployment** para conocer como desplegar el proyecto.
 
-### Pre-requisitos 📋
+## Pre-requisitos 📋
 
-_Descargar [apache-tomcat-8](https://tomcat.apache.org/download-80.cgi)_
+*Descargar [apache-tomcat-8](https://tomcat.apache.org/download-80.cgi)
 *Tener una conexión a una base de datos. En caso de no tener, puede acceder al [tutorial](https://drive.google.com/file/d/17PrCJVVlS56VNvhAqAY0lzGB9NYZHOl0/view?usp=sharing)
 
 ### Instalación 🔧
