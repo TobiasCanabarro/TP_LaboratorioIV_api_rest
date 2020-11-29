@@ -10,9 +10,10 @@ Mira **Deployment** para conocer como desplegar el proyecto.
 
 
 ### Pre-requisitos 📋
-
+```
 _Descargar [apache-tomcat-8](https://tomcat.apache.org/download-80.cgi)_
 _Tener una conexión a una base de datos_
+```
 
 ### Instalación 🔧
 
