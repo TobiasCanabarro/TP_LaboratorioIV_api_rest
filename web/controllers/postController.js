@@ -75,6 +75,8 @@ let responseListPosts = (request) =>{
             })
 
             console.log(json.description);
+            // getListPost();
+            // location.reload();
         }
     }
 

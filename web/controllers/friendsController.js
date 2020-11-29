@@ -89,10 +89,11 @@
 
                 let json = JSON.parse(object);
                 alert(json.description);
-                getMyFriends();
+                location.reload();
+                // getMyFriends();
                 console.log(json.description);
             }
         }
     }
 
-    getMyFriends();
+    // getMyFriends();

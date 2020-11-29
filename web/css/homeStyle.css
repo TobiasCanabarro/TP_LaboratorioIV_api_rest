@@ -38,3 +38,8 @@ article {
 /*
 box-shadow: 2px 2px 5px #000;
     opacity: .7; */
+
+body {
+    background-color: #F3EBF6;
+    font-family: 'Ubuntu', sans-serif;
+}
