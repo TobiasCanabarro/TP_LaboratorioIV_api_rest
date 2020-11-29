@@ -11,11 +11,8 @@ Mira **Deployment** para conocer como desplegar el proyecto.
 
 ### Pre-requisitos 📋
 
-_Que cosas necesitas para instalar el software y como instalarlas_
-
-```
-Da un ejemplo
-```
+_Descargar [apache-tomcat-8](https://tomcat.apache.org/download-80.cgi)_
+_Tener una conexión a una base de datos_
 
 ### Instalación 🔧
 
@@ -34,14 +31,6 @@ hasta finalizar
 ```
 
 _Finaliza con un ejemplo de cómo obtener datos del sistema o como usarlos para una pequeña demo_
-
-### Y las pruebas de estilo de codificación ⌨️
-
-_Explica que verifican estas pruebas y por qué_
-
-```
-Da un ejemplo
-```
 
 ## Despliegue 📦
 
