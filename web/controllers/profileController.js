@@ -21,19 +21,28 @@ let requestLoadProfile = () => {
 
 
 function responseLoadProfile (request) {
-    let object = request.responseText;
-    let myUser = JSON.parse(object);
 
-    if(myUser != undefined){
 
-        localStorage.setItem('myUser', myUser);
+    if(request.status == 200){
+        let object = request.responseText;
 
-        document.getElementById("nameUser").value = myUser.name;
-        document.getElementById("surname").value = myUser.surname;
-        document.getElementById("nickname").value = myUser.nickname;
-        document.getElementById("birthday").value = myUser.birthday;
-        document.getElementById("email").value = myUser.email;
+        if(object){
+            let myUser = JSON.parse(object);
+            if(myUser != undefined){
+
+                localStorage.setItem('myUser', myUser);
+
+                document.getElementById("nameUser").value = myUser.name;
+                document.getElementById("surname").value = myUser.surname;
+                document.getElementById("nickname").value = myUser.nickname;
+                document.getElementById("birthday").value = myUser.birthday;
+                document.getElementById("email").value = myUser.email;
+            }
+        }
+
     }
+
+
 }
 
 //**********************************

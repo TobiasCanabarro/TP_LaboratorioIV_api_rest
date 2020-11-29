@@ -12,7 +12,6 @@ integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xX
       crossorigin="anonymous">
 <link rel="stylesheet" href="css/homeStyle.css">
 
-<!--Agregar el loadHomeData, para que cargue los posteos.-->
 <body class="w3-theme-l5">
 
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
@@ -64,12 +63,12 @@ integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xX
                             <div class="col-md-6 text-center">
                                 <div class="input-group">
                             <textarea id="post" maxlength="140" class="form-control" aria-label="With textarea"
-                                      style="margin-top: 0px; margin-bottom: 0px; height: 100px; width: 60px;" placeholder="Write something!"></textarea>
+                            style="margin-top: 0px; margin-bottom: 0px; height: 148px;" placeholder="Write something!"></textarea>
                                 </div>
                             </div>
 
                         </div>
-                        <button type="button" class="btn btn-primary buttonMargin" onclick="requestPost();" >Post</button> <!-- Falta la funcion de publicar! -->
+                        <button type="button" class="btn btn-primary buttonMargin" onclick="requestPost();" >Post</button>
                     </div>
                 </div>
             </div>
@@ -77,24 +76,7 @@ integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xX
         <!-- Header posteos fin -->
 
         <!-- Espacio donde aparecen los posteos inicio -->
-        <div class ="agrupar">
-            <section>
-
-                <!-- Los article, son los posteos; se tienen que generar de forma dinamica :D -->
-                <article>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing
-                        elit.Nam saepe beatae tempore a ipsa molestiae aliquam. Nobis.
-                    </p>
-                    <time datetime = "29-07-2020">Publicado el 29-07-2020</time>
-                </article>
-                <article>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing
-                        elit.Nam saepe beatae tempore a ipsa molestiae aliquam. Nobis.
-                    </p>
-                    <time datetime = "29-07-2020">Publicado el 29-07-2020</time>
-                </article>
-            </section>
-
+        <div class ="agrupar" id="postsList">
         </div>
         <!-- Espacio donde aparecen los posteos fin -->
 

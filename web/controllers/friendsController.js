@@ -65,8 +65,8 @@
     var deleteRelationship = (id)=>{
 
         var body ={};
-        body.receiveUserId = id;
-        body.sendUserId = localStorage.getItem("myUserId");
+        body.receiveUserId = localStorage.getItem("myUserId");
+        body.sendUserId = id;
         console.log(body);
 
         var request = new XMLHttpRequest();
@@ -89,15 +89,10 @@
 
                 let json = JSON.parse(object);
                 alert(json.description);
-                //getMyFriends();
+                getMyFriends();
                 console.log(json.description);
             }
         }
     }
 
-    /*
-      Faltan las funciones refuseRequest, acceptRequest
-     */
-
-
-    // getMyFriends();
+    getMyFriends();

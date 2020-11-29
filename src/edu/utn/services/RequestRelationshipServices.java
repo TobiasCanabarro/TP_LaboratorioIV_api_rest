@@ -101,7 +101,7 @@ public class RequestRelationshipServices {
         return response.toString();
     }
 
-    //Este metodo se usa par eliminar a un amigo
+    //Este metodo se usa para eliminar a un amigo
     @POST
     @Path("deleteRelation")
     @Produces(MediaType.APPLICATION_JSON)

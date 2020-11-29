@@ -23,13 +23,13 @@ let requestLogOut = () => {
 
 let responseLogOut = (request) => {
 
-    let obj = request.responseText;
+    if(request.status == 200){
 
-    if(obj){
+        let obj = request.responseText;
 
-        let json = JSON.parse(obj);
+        if(obj){
 
-        if(request.status == 200){
+            let json = JSON.parse(obj);
 
             if(json.description == "OK"){
                 localStorage.clear();
@@ -37,6 +37,9 @@ let responseLogOut = (request) => {
             }
         }
     }
+
+
+
 
 
 

@@ -1,16 +1,13 @@
 package edu.utn.entity;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
 
 public class Login {
 
     private String email;
-    private String pasword;
+    private String password;
 
     public Login(String email, String password) {
-        setPasword(password);
+        setPassword(password);
         setEmail(email);
     }
 
@@ -22,11 +19,11 @@ public class Login {
         this.email = email;
     }
 
-    public String getPasword() {
-        return pasword;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasword(String pasword) {
-        this.pasword = pasword;
+    public void setPassword(String pasword) {
+        this.password = pasword;
     }
 }

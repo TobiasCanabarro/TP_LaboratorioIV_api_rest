@@ -28,13 +28,10 @@ public class PostServices {
         PostManager manager = UserPostManagerFactory.create();
         JSONObject jsonObject = new JSONObject(body);
 
-        String email = jsonObject.getString("email");
+        long id = jsonObject.getLong("id");
         String post = jsonObject.getString("post");
 
-        UserManager userManager = UserManagerFactory.create();
-        User user = userManager.get(email);
-
-        boolean value = manager.newPost(post, user.getId());
+        boolean value = manager.newPost(post, id);
         Result result = Result.ERR;
 
         if(value){
@@ -46,26 +43,25 @@ public class PostServices {
     }
 
     //Este metodo obtiene todos los posteos del usuario, tanto como los propios, como de los amigos.
-    @GET
+    @POST
     @Path("myPosts")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String myPosts (String body){
+    public Response myPosts (String body){
 
         PostManager manager = UserPostManagerFactory.create();
         JSONObject jsonObject = new JSONObject(body);
 
-        String email = jsonObject.getString("email");
+        long id = jsonObject.getLong("id");
 
         UserManager userManager = UserManagerFactory.create();
-        User user = userManager.get(email);
 
         //Obtengo los nombres y apellidos de los usuarios de mis publicaciones
-        List<UserPost> posts = manager.myPosts(user.getId());
+        List<UserPost> posts = manager.myPosts(id);
 
         JSONArray jsonArray = new JSONArray();
         jsonObject = null;
-        user = null;
+        User user = null;
 
         for(UserPost postElement : posts){
             jsonObject = new JSONObject();
@@ -82,7 +78,7 @@ public class PostServices {
 
         JSONObject response = new JSONObject(entityList);
 
-        return  response.toString();
+        return Response.status(Response.Status.OK).entity(response.toString()).build();
     }
 
 

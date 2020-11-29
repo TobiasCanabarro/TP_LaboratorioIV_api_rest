@@ -24,7 +24,7 @@ public class LoginServices {
     @Path("getUser")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String getUser(String body){
+    public Response getUser(String body){
 
         JSONObject jsonObject = new JSONObject(body);
         long id = jsonObject.getLong("id");
@@ -33,13 +33,14 @@ public class LoginServices {
         User user = manager.get(id);
 
         JSONObject response = new JSONObject(user);
-        return response.toString();
+
+        return Response.status(Response.Status.OK).entity(response.toString()).build();
     }
 
     @GET
     @Path("getAllUser")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getAllUser(){
+    public Response getAllUser(){
 
         UserManager manager = UserManagerFactory.create();
         List<User> users = manager.getAllUser();
@@ -49,11 +50,11 @@ public class LoginServices {
         EntityList userList = new EntityList();
         userList.setList(jsonArray);
 
-        JSONObject jsonObject = new JSONObject(userList);
-        return  jsonObject.toString();
+        JSONObject response = new JSONObject(userList);
+        return Response.status(Response.Status.OK).entity(response.toString()).build();
     }
 
-    //Response.status(Response.Status.OK).entity(response.toString()).build();
+
     @POST
     @Path("login")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -63,7 +64,9 @@ public class LoginServices {
         JSONObject jsonObject = new JSONObject(body);
         UserManager manager = UserManagerFactory.create();
 
-        User user = manager.getValidator().isAlreadyLogin(jsonObject.getString("email"));
+        String email = jsonObject.getString("email");
+
+        User user = manager.getValidator().isAlreadyLogin(email);
         Result result = Result.ERR;
 
         if (user != null) {
@@ -72,7 +75,7 @@ public class LoginServices {
         }
         else {
             Login login = LoginFactory.create(jsonObject);
-            result = manager.logIn(login.getEmail(), login.getPasword());
+            result = manager.logIn(login.getEmail(), login.getPassword());
         }
 
         JSONObject response = new JSONObject(result);
