@@ -1,118 +1,132 @@
 
 
-let postObject = () => {
+    let postObject = () => {
 
-    let obj = {};
-    obj.id = localStorage.getItem("myUserId");
-    obj.post = document.getElementById("post").value;
-    document.getElementById("post").value = "";
-    return obj;
-}
+        let obj = {};
+        obj.id = localStorage.getItem("myUserId");
+        obj.post = document.getElementById("post").value;
+        document.getElementById("post").value = "";
+        return obj;
+    }
 
-let requestPost = () => {
+    let requestPost = () => {
 
-    const body = postObject();
+        const body = postObject();
 
-    let request = new XMLHttpRequest();
+        let request = new XMLHttpRequest();
 
-    request.open('POST', 'rest/post/newPost', true);
-    request.setRequestHeader('Content-Type', 'application/json');
+         if(body.post != ""){
+             request.open('POST', 'rest/post/newPost', true);
+             request.setRequestHeader('Content-Type', 'application/json');
 
-    request.onload=()=> responsePost(request);
+             request.onload=()=> responsePost(request);
 
-    request.send(JSON.stringify(body));
-}
+             request.send(JSON.stringify(body));
+         } else {
+             alert("La publicacion no puede estar vacio");
+         }
 
-let responsePost = (request) => {
 
-    if(request.status == 200){
+    }
 
-        let obj = request.responseText;
+    let responsePost = (request) => {
 
-        if(obj){
+        if(request.status == 200){
 
-            let json = JSON.parse(obj);
+            let obj = request.responseText;
 
-            if(json.description != "OK"){
-                alert(json.description);
+            if(obj){
+
+                let json = JSON.parse(obj);
+
+                if(json.description != "OK"){
+                    alert(json.description);
+                }
+                refresh();
+                // getListPost();
             }
-            getListPost();
         }
     }
-}
 
 
-let getListPost = ()=>{
-    const body = {}
-    body.id = localStorage.getItem('myUserId');
+    let getListPost = ()=>{
+        const body = {}
+        body.id = localStorage.getItem('myUserId');
 
-    let request = new XMLHttpRequest();
-    request.open('POST','rest/post/myPosts', true);
-    request.setRequestHeader('Content-Type', 'application/json');
+        let request = new XMLHttpRequest();
+        request.open('POST','rest/post/myPosts', true);
+        request.setRequestHeader('Content-Type', 'application/json');
 
-    request.onload=()=> responseListPosts(request);
+        request.onload=()=> responseListPosts(request);
 
-    request.send(JSON.stringify(body));
-}
+        request.send(JSON.stringify(body));
+    }
 
-let responseListPosts = (request) =>{
+    let responseListPosts = (request) =>{
 
-    const listPost = [];
-    let object = request.responseText;
-    console.log(object);
-
-    if(request.status == 200){
-
+        const listPost = [];
         let object = request.responseText;
+        console.log(object);
 
-        if(object){
+        if(request.status == 200){
 
-            let json = JSON.parse(object);
-            localStorage.setItem('postsList', json);            
-            
-            orderListPost(json.list).forEach(e=>{
-                postByElement(e);
-            })
+            let object = request.responseText;
 
-            console.log(json.description);
-            // getListPost();
-            // location.reload();
+            if(object){
+
+                let json = JSON.parse(object);
+                localStorage.setItem('postsList', json);
+
+                orderListPost(json.list).forEach(e=>{
+                    postByElement(e);
+                })
+
+                console.log(json.description);
+                // getListPost();
+                // location.reload();
+            }
         }
+
     }
 
-}
+    var orderListPost =(array)=>{
+       return array.sort((a,b)=>b.idPost-a.idPost);
+    }
 
-var orderListPost =(array)=>{
-   return array.sort((a,b)=>b.idPost-a.idPost);
-}
+    var postByElement = (myElement)=>{
 
-var postByElement = (myElement)=>{
+        var post = document.createElement("ARTICLE");
+        post.innerHTML = '';
 
-    var post = document.createElement("ARTICLE");
-    post.innerHTML = '';
+        var nameUser = document.createElement('H5');
+        nameUser.innerHTML = myElement.user;
+        post.appendChild(nameUser);
 
-    var nameUser = document.createElement('H5');
-    nameUser.innerHTML = myElement.user;
-    post.appendChild(nameUser);
+        var img = document.createElement('IMG');
+        // img.width="200";
+        // img.height="300";
+        img.src = "img/eldiego.png";
 
-    var img = document.createElement('IMG');
-    // img.width="200";
-    // img.height="300";
-    img.src = "img/eldiego.png";
+        post.appendChild(img);
 
-    post.appendChild(img);
+        var parrafo = document.createElement('P');
+        parrafo.type= 'text';
+        parrafo.innerHTML = myElement.post;
+        post.appendChild(parrafo);
 
-    var parrafo = document.createElement('P');
-    parrafo.type= 'text';
-    parrafo.innerHTML = myElement.post;
-    post.appendChild(parrafo);
+        var time = document.createElement('TIME');
+        time.datetime = 'YYYY-MM-DD';
+        time.innerHTML = myElement.date;
+        post.appendChild(time);
 
-    var time = document.createElement('TIME');
-    time.datetime = 'YYYY-MM-DD';
-    time.innerHTML = myElement.date;
-    post.appendChild(time);
+        document.getElementById('postsList').appendChild(post);
+    }
 
-    document.getElementById('postsList').appendChild(post);   
-}
+    getListPost();
 
-getListPost();
+
+    let refresh = ()=> {
+
+        window.location.href = "home.html";
+
+    }
