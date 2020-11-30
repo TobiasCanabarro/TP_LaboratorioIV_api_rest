@@ -154,7 +154,9 @@ public class LoginServices {
         JSONObject jsonObject = new JSONObject(body);
 
         UserManager manager = UserManagerFactory.create();
-        boolean value =  manager.unLockedAccount(jsonObject.getString("email"));
+        String email = jsonObject.getString("email");
+
+        boolean value =  manager.unLockedAccount(email);
 
         Result result = Result.ERR;
 
@@ -196,19 +198,16 @@ public class LoginServices {
 
         JSONObject jsonObject = new JSONObject(body);
         String newPassword = jsonObject.getString("password");
-        String email = jsonObject.getString("email");
+        long id = jsonObject.getLong("id");
 
         UserManager manager = UserManagerFactory.create();
-        User user = manager.get(email);
 
-
-        boolean value = manager.changePassword(user.getId(), newPassword);
+        boolean value = manager.changePassword(id, newPassword);
         Result result = Result.CHANGE_PASSWORD_FAIL;
 
         if(value){
             result = Result.CHANGE_PASSWORD;
         }
-
 
         JSONObject response = new JSONObject(result);
         return  Response.status(Response.Status.OK).entity(response.toString()).build();

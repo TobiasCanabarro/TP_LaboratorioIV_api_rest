@@ -41,7 +41,8 @@ let resetPasswordObject = () => {
 
     let obj = {};
     obj.password = document.querySelector('#pass').value;
-    obj.email = localStorage.getItem("forgotPasswordEmail");
+    obj.id = localStorage.getItem("myUserId");
+
     return obj;
 }
 
@@ -51,7 +52,8 @@ let requestResetPassword = () => {
     let password = document.querySelector('#pass').value;
     let confirmation = document.querySelector('#passCheck').value;
 
-    if(equalsPassword(password, confirmation)){
+    //equalsPassword(password, confirmation)
+    if(isValid(password, confirmation)){
 
         const body = resetPasswordObject();
         let request = new XMLHttpRequest();
@@ -59,10 +61,10 @@ let requestResetPassword = () => {
         request.open('POST', 'rest/login/resetPassword', true);
         request.setRequestHeader('Content-Type', 'application/json');
 
-        request.onload = () => response();
+        request.onload = () => response(request);
         request.send(JSON.stringify(body));
     }else {
-        alert("las contraseñas no coinciden")
+        alert("las contraseñas no coinciden o hay campos vacios")
     }
 }
 
@@ -83,6 +85,13 @@ let response = (request) => {
             }
         }
     }
+}
+
+let isValid = (password, confirmation) =>{
+    let value = password != "";
+    value &= confirmation != "";
+    value &= password == confirmation;
+    return value;
 }
 
 let equalsPassword = (password, confirmation) => {
