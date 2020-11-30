@@ -37,6 +37,7 @@ public class LoginServices {
         return Response.status(Response.Status.OK).entity(response.toString()).build();
     }
 
+    //Este metodo trae todos los usuarios registrados de la base de datos
     @GET
     @Path("getAllUser")
     @Produces(MediaType.APPLICATION_JSON)
@@ -66,7 +67,7 @@ public class LoginServices {
 
         String email = jsonObject.getString("email");
 
-        User user = manager.getValidator().isAlreadyLogin(email);
+        User user = manager.getValidator().isAlreadyLogin(email);//Se fija si el usuario ya esta logeado, en caso que este, devuelve el usuario.
         Result result = Result.ERR;
 
         if (user != null) {
@@ -213,7 +214,7 @@ public class LoginServices {
         return  Response.status(Response.Status.OK).entity(response.toString()).build();
     }
 
-
+    //Este metodo te permite modificar los datos del usuario.
     @POST
     @Path("modifyProfile")
     @Produces(MediaType.APPLICATION_JSON)

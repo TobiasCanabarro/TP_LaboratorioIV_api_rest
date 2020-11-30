@@ -12,8 +12,10 @@ let requestUnlockAccountObject = () => {
 
 
 let requestUnlockAccount = () => {
+
     const body = requestUnlockAccountObject();
     let request = new XMLHttpRequest();
+
     request.open('POST', "rest/login/requestUnlockedAccount" ,true);
     request.setRequestHeader('Content-Type', 'application/json');
     request.send(JSON.stringify(body));
