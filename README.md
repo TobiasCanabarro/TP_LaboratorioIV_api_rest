@@ -14,9 +14,6 @@ _Estas instrucciones te permitirán obtener una copia del proyecto en funcionami
 * Descargar el archivo [log4j.properties](https://drive.google.com/file/d/1sVjhspU92Hd9j6XsGrso-pA9Hk1xIZ9C/view?usp=sharing). Este archivo tiene las configuraciones de log4j.
 * Ambos archivo tiene que estar en la siguiente ruta C:\
 
-## Despliegue 📦
-
-_Agrega notas adicionales sobre como hacer deploy_
 
 ## Construido con 🛠️
 
